@@ -1,4 +1,26 @@
-async function getData() {
+import WeatherWidget from "./components/WeatherWidget";
+import Widget from "./components/Widget";
+
+interface Values {
+  temperature: number;
+}
+
+interface Interval {
+  startTime: string;
+  values: Values;
+}
+
+interface Timeline {
+  intervals: Interval[];
+}
+
+interface DataResponse {
+  data: {
+    timelines: Timeline[];
+  };
+}
+
+async function getData(): Promise<DataResponse> {
   const apiKey = "sYyZhZZyimzRkw61SZPsaJULPBHLYgyi"; // Replace with your actual API key
   const city = "Groningen";
   const url = `https://api.tomorrow.io/v4/timelines?location=${city}&fields=temperature&timesteps=1h&units=metric&apikey=${apiKey}`;
@@ -30,20 +52,9 @@ export default async function Home() {
         backgroundPosition: "center center",
       }}
     >
-      <div>d</div>
+      <div className="">d</div>
       <div className="flex flex-col items-center gap-2 m-16">
-        <div className="flex justify-between w-full bg-slate-400 rounded-3xl shadow-2xl p-6">
-          <div className="w-full flex flex-col">
-            <span className="text-xl">Groningen</span>
-            <span className="text-4xl">60°C</span>
-          </div>
-          <div className="flex flex-col justify-end text-right">
-            <span className="">Sunny</span>
-            <span className="">H:69°</span>
-            <span className="">L:51°</span>
-          </div>
-        </div>
-        <span>Weather</span>
+        <WeatherWidget />
       </div>
     </main>
   );
