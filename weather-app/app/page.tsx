@@ -54,10 +54,16 @@ export default async function Home() {
       }}
     >
       <div className="opacity-0">d</div>
-      <div className="flex flex-col items-center gap-6 m-16">
-        <WeatherWidget city="Groningen" />
-        <WeatherWidget city="New York" />
-        <WeatherForecastWidget />
+      <div className="flex flex-wrap justify-center gap-6 mx-24 justify-between">
+        <div>
+          <WeatherWidget city="Groningen" />
+        </div>
+        <div className="w-2/5">
+          <WeatherWidget city="New York" />
+        </div>
+        <div className="w-full">
+          <WeatherForecastWidget />
+        </div>
       </div>
     </main>
   );
