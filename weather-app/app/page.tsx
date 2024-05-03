@@ -1,3 +1,4 @@
+import WeatherForecastWidget from "./components/WeatherForecastWidget/WeatherForecastWidget";
 import WeatherWidget from "./components/WeatherWidget";
 import Widget from "./components/Widget";
 
@@ -52,9 +53,11 @@ export default async function Home() {
         backgroundPosition: "center center",
       }}
     >
-      <div className="">d</div>
-      <div className="flex flex-col items-center gap-2 m-16">
-        <WeatherWidget />
+      <div className="opacity-0">d</div>
+      <div className="flex flex-col items-center gap-6 m-16">
+        <WeatherWidget city="Groningen" />
+        <WeatherWidget city="New York" />
+        <WeatherForecastWidget />
       </div>
     </main>
   );
