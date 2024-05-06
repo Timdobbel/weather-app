@@ -1,68 +1,80 @@
+// const apiKey = "sYyZhZZyimzRkw61SZPsaJULPBHLYgyi"; // Consider moving this to environment variables
+// const city = "Groningen";
+// const now = new Date(); // Current date and time
+// const threeDaysFromNow = addDays(now, 3); // Calculate date 3 days from now
+// const startDate = formatISO(now); // Format current date to ISO string
+// const endDate = formatISO(threeDaysFromNow); // Format date 3 days from now to ISO string
+// ! this url is not up to data, should be:  {{baseUrl}}/weather/forecast?location={{location}}&units={{units}}&timesteps=1h
+// const url = `https://api.tomorrow.io/v4/timelines?location=${city}&fields=temperature&timesteps=1h&units=metric&start=${startDate}&end=${endDate}&apikey=${apiKey}`;
+// const res = await fetch(url, { next: { revalidate: 1500 } });
+// if (!res.ok) {
+//   throw new Error("Failed to fetch data");
+// }
+
+import { weatherData } from "@/data.stub";
 import WeatherForecastWidget from "./components/WeatherForecastWidget/WeatherForecastWidget";
 import WeatherWidget from "./components/WeatherWidget";
-import Widget from "./components/Widget";
+import { formatISO, parseISO, addDays, format } from "date-fns";
+import { Forecast } from "./interfaces/common";
 
-interface Values {
-  temperature: number;
-}
+// async function getData(): Promise<TomorrowResponse> {
+async function getData(): Promise<Forecast[]> {
+  const filteredData: Forecast[] = weatherData.timelines.hourly.map(
+    (hourly) => {
+      const { time, values } = hourly;
+      // ? perhaps a wind widget
+      const { temperature, humidity, weatherCode, windDirection, windSpeed } =
+        values;
 
-interface Interval {
-  startTime: string;
-  values: Values;
-}
+      // ! date should be formatted in the client to format according to local pc date?
+      return {
+        time: { day: format(time, "EEEE"), hour: format(time, "HH") },
+        values: {
+          temperature: Math.floor(temperature as number),
+          humidity,
+          weatherCode,
+          windDirection,
+          windSpeed,
+        },
+      };
+    }
+  );
 
-interface Timeline {
-  intervals: Interval[];
-}
+  // const filteredHourlyForecasts = weatherData.timelines.hourly.map(
+  //   (hourlyForecast) => ({
+  //     ...hourlyForecast,
+  //     values: {
+  //       temperature: hourlyForecast.values.temperature,
+  //       humidity: hourlyForecast.values.humidity,
+  //       windSpeed: hourlyForecast.values.windSpeed,
+  //       // Add any other properties you want to keep here
+  //     },
+  //   })
+  // );
 
-interface DataResponse {
-  data: {
-    timelines: Timeline[];
-  };
-}
-
-async function getData(): Promise<DataResponse> {
-  const apiKey = "sYyZhZZyimzRkw61SZPsaJULPBHLYgyi"; // Replace with your actual API key
-  const city = "Groningen";
-  const url = `https://api.tomorrow.io/v4/timelines?location=${city}&fields=temperature&timesteps=1h&units=metric&apikey=${apiKey}`;
-
-  const res = await fetch(url);
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
-  }
-
-  return res.json();
+  // return res.json();
+  return filteredData;
 }
 
 export default async function Home() {
   const data = await getData();
 
-  console.log(data.data.timelines[0].intervals);
-
   return (
     <main
-      className=" min-h-screen "
+      className="min-h-screen bg-cover bg-center no-repeat p-10"
       style={{
         backgroundImage: `url('/stacked-waves-haikei.svg')`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center center",
       }}
     >
-      <div className="opacity-0">d</div>
-      <div className="flex flex-wrap justify-center gap-6 mx-24 justify-between">
-        <div>
+      <div className="grid grid-cols-2 gap-6 justify-between max-w-[50rem] mx-auto">
+        <div className="col-span-2 sm:col-span-1">
           <WeatherWidget city="Groningen" />
         </div>
-        <div className="w-2/5">
+        <div className="col-span-2 sm:col-span-1">
           <WeatherWidget city="New York" />
         </div>
-        <div className="w-full">
-          <WeatherForecastWidget />
+        <div className="col-span-2">
+          <WeatherForecastWidget data={data} />
         </div>
       </div>
     </main>
