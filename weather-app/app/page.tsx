@@ -2,27 +2,25 @@ import { mockWeatherData } from "@/data.stub";
 import WeatherForecastWidget from "./components/WeatherForecastWidget/WeatherForecastWidget";
 import WeatherWidget from "./components/WeatherWidget";
 import { format } from "date-fns";
-import { Forecast } from "./interfaces/common";
+import { Forecast, location } from "./interfaces/common";
 import { WeatherData } from "./interfaces/tommorowio";
 
-async function fetchWeather(): Promise<WeatherData> {
-  if (!process.env.API_KEY) throw new Error("Missing API key env variable");
+async function fetchWeather(location: string): Promise<WeatherData> {
+  if (!process.env.API_KEY)
+    throw new Error("Missing API key environment variable");
 
-  const url = `https://api.tomorrow.io/v4/weather/forecast?location=14.534209,121.032311&units=metric&timesteps=1h&fields=temperature,chanceOfRain,humidity&apikey=${process.env.API_KEY}`;
+  const url = `https://api.tomorrow.io/v4/weather/forecast?location=${location}&units=metric&timesteps=1h&fields=temperature,chanceOfRain,humidity&apikey=${process.env.API_KEY}`;
+  // Cache results api calls for 1500 seconds
   const res = await fetch(url, { next: { revalidate: 1500 } });
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
 
-  const data = await res.json(); // Correctly parse the response body
-  console.log(data);
-
-  return data;
+  return await res.json();
 }
 
-// async function getData(): Promise<TomorrowResponse> {
-async function getData(): Promise<Forecast[]> {
+async function getData(location: string): Promise<Forecast[]> {
   console.log(
     JSON.parse(process.env.MOCK_API as string)
       ? "Fetching using mock api..."
@@ -31,8 +29,9 @@ async function getData(): Promise<Forecast[]> {
 
   const data = JSON.parse(process.env.MOCK_API as string)
     ? mockWeatherData
-    : ((await fetchWeather()) as unknown as WeatherData);
+    : ((await fetchWeather(location)) as unknown as WeatherData);
 
+  // Filter out properties that are not used
   const filteredData: Forecast[] = data?.timelines.hourly.map((hourly) => {
     const { time, values } = hourly;
     const { temperature, humidity, weatherCode, windDirection, windSpeed } =
@@ -45,8 +44,6 @@ async function getData(): Promise<Forecast[]> {
         temperature: Math.floor(temperature as number),
         humidity,
         weatherCode,
-        windDirection,
-        windSpeed,
       },
     };
   });
@@ -55,7 +52,8 @@ async function getData(): Promise<Forecast[]> {
 }
 
 export default async function Home() {
-  const data = await getData();
+  const dataGroningen = await getData(location.groningen);
+  const dataManila = await getData(location.manila);
 
   return (
     <main
@@ -66,13 +64,13 @@ export default async function Home() {
     >
       <div className="grid grid-cols-2 gap-6 justify-between max-w-[50rem] mx-auto">
         <div className="col-span-2 sm:col-span-1">
-          <WeatherWidget city="Groningen" data={data} />
+          <WeatherWidget city="Groningen" data={dataGroningen} />
         </div>
         <div className="col-span-2 sm:col-span-1">
-          <WeatherWidget city="New York" data={data} />
+          <WeatherWidget city="Manila" data={dataManila} />
         </div>
         <div className="col-span-2">
-          <WeatherForecastWidget data={data} />
+          <WeatherForecastWidget data={dataGroningen} />
         </div>
       </div>
     </main>

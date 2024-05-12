@@ -13,3 +13,8 @@ export interface Forecast {
   };
   values: Partial<FilteredValues>;
 }
+
+export const location = {
+  groningen: "53.220570,6.566798",
+  manila: "14.534209,121.032311",
+};
