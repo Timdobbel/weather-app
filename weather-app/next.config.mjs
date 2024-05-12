@@ -6,7 +6,7 @@ const nextConfig = {
     domains: ["cdn-icons-png.flaticon.com"],
   },
   reactStrictMode: true,
-  webpack: (config, { isServer }) => {
+  webpack: (config) => {
     // Check if we're in development mode
     // Add the @svgr/webpack loader to the module.rules array
     config.module.rules.push({

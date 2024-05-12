@@ -1,6 +1,6 @@
 import { WeatherData } from "./app/interfaces/tommorowio";
 
-export const weatherData: WeatherData = {
+export const mockWeatherData: WeatherData = {
   timelines: {
     hourly: [
       {

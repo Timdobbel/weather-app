@@ -18,7 +18,7 @@ export default function WeatherForecastWidget({ data }: Props) {
       <ScrollChevron direction="left" scrollRef={scrollContainerRef} />
       <div
         ref={scrollContainerRef}
-        className="flex space-x-10 overflow-x-scroll"
+        className="flex space-x-10 overflow-x-scroll mx-1"
         style={{ scrollbarWidth: "none" }}
       >
         {data.map((hour, index) => (

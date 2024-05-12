@@ -5,6 +5,7 @@ interface Props {
   children: ReactNode;
 }
 
+// Renders the base layout reused by all widgets. Has a gradient background and centered content.
 export default function Widget({ name, children }: Props) {
   return (
     <div className="min-w-60 w-full flex flex-col items-center gap-2 text-white">

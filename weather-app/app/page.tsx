@@ -1,45 +1,56 @@
-// const apiKey = "sYyZhZZyimzRkw61SZPsaJULPBHLYgyi"; // Consider moving this to environment variables
-// const city = "Groningen";
-// const now = new Date(); // Current date and time
-// const threeDaysFromNow = addDays(now, 3); // Calculate date 3 days from now
-// const startDate = formatISO(now); // Format current date to ISO string
-// const endDate = formatISO(threeDaysFromNow); // Format date 3 days from now to ISO string
-// ! this url is not up to data, should be:  {{baseUrl}}/weather/forecast?location={{location}}&units={{units}}&timesteps=1h
-// const url = `https://api.tomorrow.io/v4/timelines?location=${city}&fields=temperature&timesteps=1h&units=metric&start=${startDate}&end=${endDate}&apikey=${apiKey}`;
-// const res = await fetch(url, { next: { revalidate: 1500 } });
-// if (!res.ok) {
-//   throw new Error("Failed to fetch data");
-// }
-
-import { weatherData } from "@/data.stub";
+import { mockWeatherData } from "@/data.stub";
 import WeatherForecastWidget from "./components/WeatherForecastWidget/WeatherForecastWidget";
 import WeatherWidget from "./components/WeatherWidget";
 import { format } from "date-fns";
 import { Forecast } from "./interfaces/common";
+import { WeatherData } from "./interfaces/tommorowio";
+
+async function fetchWeather(): Promise<WeatherData> {
+  if (!process.env.API_KEY) throw new Error("Missing API key env variable");
+
+  const url = `https://api.tomorrow.io/v4/weather/forecast?location=14.534209,121.032311&units=metric&timesteps=1h&fields=temperature,chanceOfRain,humidity&apikey=${process.env.API_KEY}`;
+  const res = await fetch(url, { next: { revalidate: 1500 } });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const data = await res.json(); // Correctly parse the response body
+  console.log(data);
+
+  return data;
+}
 
 // async function getData(): Promise<TomorrowResponse> {
 async function getData(): Promise<Forecast[]> {
-  const filteredData: Forecast[] = weatherData.timelines.hourly.map(
-    (hourly) => {
-      const { time, values } = hourly;
-      const { temperature, humidity, weatherCode, windDirection, windSpeed } =
-        values;
-
-      // TODO date should be formatted on client, not server
-      return {
-        time: { day: format(time, "EEEE"), hour: format(time, "HH") },
-        values: {
-          temperature: Math.floor(temperature as number),
-          humidity,
-          weatherCode,
-          windDirection,
-          windSpeed,
-        },
-      };
-    }
+  console.log(
+    JSON.parse(process.env.MOCK_API as string)
+      ? "Fetching using mock api..."
+      : "Fetching using tomorrow.io api..."
   );
 
-  // return res.json();
+  const data = JSON.parse(process.env.MOCK_API as string)
+    ? mockWeatherData
+    : ((await fetchWeather()) as unknown as WeatherData);
+
+  const filteredData: Forecast[] = data?.timelines.hourly.map((hourly) => {
+    const { time, values } = hourly;
+    const { temperature, humidity, weatherCode, windDirection, windSpeed } =
+      values;
+
+    // TODO date should be formatted on client, not server
+    return {
+      time: { day: format(time, "EEEE"), hour: format(time, "HH") },
+      values: {
+        temperature: Math.floor(temperature as number),
+        humidity,
+        weatherCode,
+        windDirection,
+        windSpeed,
+      },
+    };
+  });
+
   return filteredData;
 }
 
