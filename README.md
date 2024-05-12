@@ -24,10 +24,14 @@ Using dev containers (requires vscode with devcontainers plugin installed)
 
 5. Open the `.env` file and fill in your Tomorrow.io API key.
 
-It is also possible to run if you have node.js installed locally. I f
+It is also possible to run if you have node.js installed locally.
 
 ### Running the Application
 
 1. `cd .\weather-app\`
 2. `npm i`
 3. `npm run dev`
+4. visit http://localhost:3000/ to the the application 🚀
+
+If set up correctly (using MOCK_API=false), you should see the following
+![alt text](image.png)
