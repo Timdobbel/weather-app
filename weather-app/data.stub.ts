@@ -1,6 +1,6 @@
-import { WeatherDataTomorrowIo } from "./app/interfaces/tommorowio";
+import { WeatherData } from "./app/interfaces/tommorowio";
 
-export const weatherData: WeatherDataTomorrowIo = {
+export const weatherData: WeatherData = {
   timelines: {
     hourly: [
       {

@@ -11,11 +11,7 @@ interface Props {
 }
 
 export default function WeatherForecastWidget({ data }: Props) {
-  const currentDay = useRef<string>(null);
-  // Create refs for each time section
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  // Example usage: scrollToTime(0); // Scrolls to the first time section
 
   return (
     <Widget name="Forecast widget">

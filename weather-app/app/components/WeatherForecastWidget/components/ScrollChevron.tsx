@@ -1,5 +1,6 @@
+"use-client";
 import React from "react";
-import ChevronRight from "../../svg/chevron-right.svg";
+import { ChevronRight } from "../../svg";
 
 interface Props {
   direction: "right" | "left";

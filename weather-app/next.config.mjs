@@ -5,15 +5,14 @@ const nextConfig = {
   images: {
     domains: ["cdn-icons-png.flaticon.com"],
   },
+  reactStrictMode: true,
   webpack: (config, { isServer }) => {
     // Check if we're in development mode
-    if (!isServer) {
-      // Add the @svgr/webpack loader to the module.rules array
-      config.module.rules.push({
-        test: /\.svg$/,
-        use: [{ loader: "@svgr/webpack", options: { icon: true } }],
-      });
-    }
+    // Add the @svgr/webpack loader to the module.rules array
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: [{ loader: "@svgr/webpack", options: { icon: true } }],
+    });
 
     return config;
   },

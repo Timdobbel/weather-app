@@ -1,10 +1,13 @@
+"use-client";
 import React from "react";
-import CloudSun from "../../svg/weatherIcons/cloud-sun.svg";
-import CloudNight from "../../svg/weatherIcons/cloud-moon.svg";
-import FogMoon from "../../svg/weatherIcons/fog-moon.svg";
-import SunWind from "../../svg/weatherIcons/wind-sun.svg";
-import RainSun from "../../svg/weatherIcons/rain-sun.svg";
-import Cloud from "../../svg/weatherIcons/cloud.svg";
+import {
+  Cloud,
+  CloudNight,
+  CloudSun,
+  FogMoon,
+  RainSun,
+  SunWind,
+} from "../../svg";
 
 interface Props {
   weatherCode?: number;

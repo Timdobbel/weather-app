@@ -14,7 +14,7 @@
 import { weatherData } from "@/data.stub";
 import WeatherForecastWidget from "./components/WeatherForecastWidget/WeatherForecastWidget";
 import WeatherWidget from "./components/WeatherWidget";
-import { formatISO, parseISO, addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { Forecast } from "./interfaces/common";
 
 // async function getData(): Promise<TomorrowResponse> {
@@ -22,11 +22,10 @@ async function getData(): Promise<Forecast[]> {
   const filteredData: Forecast[] = weatherData.timelines.hourly.map(
     (hourly) => {
       const { time, values } = hourly;
-      // ? perhaps a wind widget
       const { temperature, humidity, weatherCode, windDirection, windSpeed } =
         values;
 
-      // ! date should be formatted in the client to format according to local pc date?
+      // TODO date should be formatted on client, not server
       return {
         time: { day: format(time, "EEEE"), hour: format(time, "HH") },
         values: {
@@ -39,18 +38,6 @@ async function getData(): Promise<Forecast[]> {
       };
     }
   );
-
-  // const filteredHourlyForecasts = weatherData.timelines.hourly.map(
-  //   (hourlyForecast) => ({
-  //     ...hourlyForecast,
-  //     values: {
-  //       temperature: hourlyForecast.values.temperature,
-  //       humidity: hourlyForecast.values.humidity,
-  //       windSpeed: hourlyForecast.values.windSpeed,
-  //       // Add any other properties you want to keep here
-  //     },
-  //   })
-  // );
 
   // return res.json();
   return filteredData;
@@ -68,10 +55,10 @@ export default async function Home() {
     >
       <div className="grid grid-cols-2 gap-6 justify-between max-w-[50rem] mx-auto">
         <div className="col-span-2 sm:col-span-1">
-          <WeatherWidget city="Groningen" />
+          <WeatherWidget city="Groningen" data={data} />
         </div>
         <div className="col-span-2 sm:col-span-1">
-          <WeatherWidget city="New York" />
+          <WeatherWidget city="New York" data={data} />
         </div>
         <div className="col-span-2">
           <WeatherForecastWidget data={data} />
