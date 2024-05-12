@@ -20,7 +20,7 @@ export default function WeatherIcon({ weatherCode }: Props) {
       //   width={50}
       //   alt={"cloud"}
       // />
-      <WeatherIconSvg />
+      <WeatherIconSvg color="red" className="text-5xl text-yellow-500" />
     );
   }
 }
