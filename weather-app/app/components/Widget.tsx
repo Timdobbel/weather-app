@@ -11,7 +11,7 @@ export default function Widget({ name, children }: Props) {
       <div className="flex justify-between w-full bg-gradient-to-b from-sky-600 to-blue-300 rounded-3xl drop-shadow-md p-6">
         {children}
       </div>
-      <span className=" text-lg text-white drop-shadow opacity-80">{name}</span>
+      <span className="text-lg text-white drop-shadow select-none">{name}</span>
     </div>
   );
 }
